@@ -5,26 +5,29 @@ import (
 	"time"
 
 	"github.com/cdouglas757/spacegame/components"
+	"github.com/cdouglas757/spacegame/db"
 	"github.com/cdouglas757/spacegame/spaceman"
 )
 
-func NewJunkyardHandler(state *spaceman.SpaceManState) *JunkyardHandler {
-	return &JunkyardHandler{playerState: state}
+func NewJunkyardHandler(state *spaceman.SpaceManState, store *db.SpaceMenStore) *JunkyardHandler {
+	return &JunkyardHandler{playerState: state, spacemenDb: store}
 }
 
 type JunkyardHandler struct {
 	playerState *spaceman.SpaceManState
+	spacemenDb  *db.SpaceMenStore
 }
 
 func (handler *JunkyardHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	sdto := handler.spacemenDb.GetSpaceManDetails(1)
 	if r.Method == http.MethodPost {
-		handler.Post(w, r)
+		handler.Post(w, r, sdto)
 		return
 	}
-	handler.Get(w, r)
+	handler.Get(w, r, sdto)
 }
 
-func (h *JunkyardHandler) Get(w http.ResponseWriter, r *http.Request) {
+func (h *JunkyardHandler) Get(w http.ResponseWriter, r *http.Request, sdto *db.SpaceManDTO) {
 	canSearch := false
 
 	if h.playerState.NextAction.IsZero() || time.Now().After(h.playerState.NextAction) {
@@ -43,10 +46,10 @@ func (h *JunkyardHandler) Get(w http.ResponseWriter, r *http.Request) {
 
 	sfs := components.SearchForScrap(canSearch, message)
 
-	components.Layout("Junkyard", sfs).Render(r.Context(), w)
+	components.Layout("Junkyard", sfs, sdto).Render(r.Context(), w)
 }
 
-func (h *JunkyardHandler) Post(w http.ResponseWriter, r *http.Request) {
+func (h *JunkyardHandler) Post(w http.ResponseWriter, r *http.Request, sdto *db.SpaceManDTO) {
 
 	h.playerState.NextAction = time.Now().Add(time.Second * 30)
 

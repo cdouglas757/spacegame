@@ -6,14 +6,20 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/cdouglas757/spacegame/db"
 	"github.com/cdouglas757/spacegame/handlers"
 	"github.com/cdouglas757/spacegame/spaceman"
 )
 
 func main() {
 	sms := spaceman.NewSpaceManState()
+	spacemenDb, err := db.NewSpaceMenStore()
 
-	junkyardHandler := handlers.NewJunkyardHandler(sms)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	junkyardHandler := handlers.NewJunkyardHandler(sms, spacemenDb)
 
 	serveMux := http.NewServeMux()
 	serveMux.Handle("/", junkyardHandler)

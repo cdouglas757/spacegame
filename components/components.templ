@@ -1,5 +1,7 @@
 package components
 
+import "github.com/cdouglas757/spacegame/db"
+
 templ SearchForScrap(canSearch bool, message string) {
     <div id="searchForScraps">
         <div id="searchForScrapsMessage">
@@ -17,7 +19,7 @@ templ doSearch() {
     </button>
 }
 
-templ Layout(title string, c templ.Component) {
+templ Layout(title string, c templ.Component, sdto *db.SpaceManDTO) {
     <html>
         <head>
             <title>{title}</title>
@@ -28,11 +30,27 @@ templ Layout(title string, c templ.Component) {
             <div class="container text-center">
                 <div class="row">
                     <div class="col">
+                        <div class="bg-secondary">
+                            <div class="row">
+                                <div class="col">
+                                    <span>Name:</span>
+                                </div>
+                                <div class="col">
+                                    <span>{ sdto.Name }</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <span>Rank:</span>
+                                </div>
+                                <div class="col">
+                                    <span>{ sdto.Rank }</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col">
+                    <div class="col-6">
                         {! c }
-                    </div>
-                    <div class="col">
                     </div>
                 </div>
             </div>
