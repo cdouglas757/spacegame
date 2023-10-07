@@ -1,0 +1,19 @@
+package components
+
+
+templ SearchForScrap(canSearch bool, message string) {
+    <div id="searchForScraps">
+        <div id="searchForScrapsMessage">
+            <span>{ message }</span>
+        </div>
+        if canSearch {
+            @doSearch()
+        }
+    </div>
+}
+
+templ doSearch() {
+    <button hx-post="/" hx-target="#searchForScraps" hx-swap="outerHTML">
+        Search for scraps
+    </button>
+}

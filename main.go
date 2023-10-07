@@ -20,9 +20,11 @@ func main() {
 	}
 
 	junkyardHandler := handlers.NewJunkyardHandler(sms, spacemenDb)
+	HomeHandler := handlers.NewHomeHandler(spacemenDb)
 
 	serveMux := http.NewServeMux()
-	serveMux.Handle("/", junkyardHandler)
+	serveMux.Handle("/junkyard", junkyardHandler)
+	serveMux.Handle("/", HomeHandler)
 
 	server := &http.Server{
 		Addr:         "localhost:3000",
